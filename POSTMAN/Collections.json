@@ -1,0 +1,95 @@
+{
+	"info": {
+		"_postman_id": "99bb4c77-0f06-4335-8acb-4bf7c7ba8de7",
+		"name": "DMG",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "GET",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Check if the repsonse was valid",
+							"pm.test(\"Response Code: 200\", function () {",
+							"    pm.response.to.have.status(200);});",
+							"",
+							"// Check if the response time is below 150 ms",
+							"pm.test(\"Response time < 150ms\", function () {",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);});",
+							"",
+							"// Check if endpoint supports JSON",
+							"let headerContentType = pm.response.headers.get(\"Content-Type\");",
+							"pm.test(\"Check Content-Type of the header: supports JSON\", function () {",
+							"    pm.expect(headerContentType).to.contain(\"application/json\");",
+							"});",
+							"",
+							"// Get the response body",
+							"let jsonData = pm.response.json();",
+							"",
+							"// Check if repsonse body contains the following attributes:",
+							"// 1. difficulty",
+							"// 2. blocks",
+							"// 3. expectedBlocks",
+							"// 4. networkHashrate",
+							"// 5/ formattedNetworkHashrate",
+							"let keyCheck = [\"difficulty\", \"blocks\", \"expectedBlocks\", \"networkHashrate\", \"formattedNetworkHashrate\"];",
+							"let keyData = Object.keys(jsonData);",
+							"pm.test(\"Check if response has the correct keys\", function() {",
+							"    for(let i = 0; i < keyCheck.length; i++) {",
+							"        pm.expect(keyData[i]).to.equal(keyCheck[i]);",
+							"    }",
+							"});",
+							"",
+							"// Check data type of each attribute in the repsonse",
+							"let valueData = Object.values(jsonData);",
+							"let valueCheck = \"number\";",
+							"pm.test(\"Check if the repsonse's values have the correct data types\", function() {",
+							"    for(let i = 0; i < valueData.length; i++) {",
+							"        pm.expect(typeof(valueData[i])).to.equal(valueCheck);",
+							"    }",
+							"});",
+							"",
+							"// Check if response is an array",
+							"pm.test(\"Check if Repsonse Body is an array\", function() {",
+							"    pm.expect(typeof(jsonData)).to.not.equal(\"Array\");",
+							"});",
+							"",
+							"// Check if response body has arrays or other nested objects",
+							"// Can be divided into two tests should an attribute contain an array or object",
+							"pm.test(\"Check if response attributes are arrays or objects\", function() {",
+							"    for(let i = 0; i < keyData.length; i++) {",
+							"        pm.expect(typeof(keyData[i])).to.not.equal(\"Array\");",
+							"        pm.expect(typeof(keyData[i])).to.not.equal(\"Object\");",
+							"    }",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://public-api.dmgblockchain.com/staging/public/stats/btc",
+					"protocol": "https",
+					"host": [
+						"public-api",
+						"dmgblockchain",
+						"com"
+					],
+					"path": [
+						"staging",
+						"public",
+						"stats",
+						"btc"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
